@@ -3,18 +3,16 @@ searchResults = {
 	results: []
 }
 
-// variables
-current_animated_marker = null;
-
 //Queries user's input and displays results from the query.
 $(document).ready(function(){
 	$("#queryAddress").click(function() {
 		var address = $("#address").val();
 		var companyName = $("#companyName").val();
-		codeAddress(companyName, address);
+		codeAddress(address);
 	});
 });
 
+// Add results to the element with the id geocode_results
 function appendResults(action) {
 	$('#geocode_results').html("");
 	var toDrop = [];
@@ -26,29 +24,30 @@ function appendResults(action) {
 	listOfLocations(toDrop);
 }
 
-function codeAddress(companyName, address) {
-	companyName = "";
+// Use Google Places API to find results
+function codeAddress(address) {
 	//Queries user's input and displays results from the query.
 	geocoder.geocode( { 'address': address }, function(results, status) {
+		// Set the map center
 		map_center = results[0].geometry.location;
 
+		// Parameters for Google Places API.
 		var request = {
 			location: map_center,
 			radius: 1600
 		}
 
-		if (companyName.length != 0){
-			request.keyword = companyName;
-		}
-
 	  	var service = new google.maps.places.PlacesService(map);
 	  	service.nearbySearch(request, callback);
 
+	  	// Setting results back to an empty array
 	  	searchResults.results = [];
 
+	  	// Everytime there's a change, run the function appendResults()
 	  	_.observe(searchResults.results, function() {
 			appendResults("none");
 		});
+
 
 	  	function callback(results, status) {
 	  		if (status == google.maps.places.PlacesServiceStatus.OK) {

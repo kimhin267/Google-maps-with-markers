@@ -56,8 +56,8 @@ function addMarker(place) {
   	});
 }
 
+// Set maps to be in bound of where the markers are placed
 function setBounds() {
-
     var bounds = new google.maps.LatLngBounds();
     for (var i=0; i < markers.length; i++) {
         bounds.extend(markers[i].getPosition());
